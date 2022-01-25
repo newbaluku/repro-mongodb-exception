@@ -1,0 +1,14 @@
+{
+  "name": "repro-mongodb-exception-test",
+  "version": "1.0.0",
+  "description": "",
+  "main": "handler.js",
+  "dependencies": {
+    "lambda-warmer": "^1.2.1",
+    "mongoose": "^6.1.7"
+  },
+  "devDependencies": {},
+  "scripts": {},
+  "author": "",
+  "license": "ISC"
+}

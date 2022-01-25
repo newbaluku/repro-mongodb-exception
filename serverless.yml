@@ -1,0 +1,46 @@
+service: repro-mongodb-exception-test
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  stage: ${opt:stage, 'dev'}
+  region: ${opt:region, 'ap-southeast-1'}
+  memorySize: 1024
+  timeout: 20
+  logRetentionInDays: 7
+  lambdaHashingVersion: 20201221
+  environment:
+    NODE_ENV: ${self:custom.NODE_ENV.${self:custom.stage}}
+    DEBUG_LOG_LEVEL: ${self:custom.DEBUG_LOG_LEVEL.${self:custom.stage}}
+
+custom:
+  stage: ${opt:stage, self:provider.stage}
+  NODE_ENV:
+    prod: production
+    staging: staging
+    dev: development
+  DEBUG_LOG_LEVEL:
+    prod: info
+    staging: debug
+    dev: debug
+
+package:
+  patterns:
+    - '!.git/**'
+    - '!.serverless/**'
+    - '!.gitignore'
+    - '!.vscode/**'
+
+functions:
+  queryCountries:
+    handler: handler.queryCountries
+    events:
+    - schedule:
+        rate: rate(4 minutes)
+        enabled: true
+        input:
+          warmer: true
+          concurrency: 1
+    - schedule:
+        rate: rate(35 minutes)
+        enabled: true
